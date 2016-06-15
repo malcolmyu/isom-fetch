@@ -5,11 +5,18 @@
   "main": "lib/index.js",
   "scripts": {
     "server:test": "better-npm-run server:test",
-    "test": "karma test",
+    "test:karma": "better-npm-run test:karma",
+    "test": "concurrently --kill-others \"npm run server:test\" \"npm run test:karma\"",
     "lint": "eslint src",
     "build": "better-npm-run build"
   },
   "betterScripts": {
+    "test:karma": {
+      "command": "karma start",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
     "build": {
       "command": "webpack src/index.js dist/redux.js",
       "env": {
@@ -20,8 +27,7 @@
     "server:test": {
       "command": "node tests/_server.babel.js",
       "env": {
-        "NODE_ENV": "development",
-        "PORT": "3009"
+        "NODE_ENV": "development"
       }
     }
   },
@@ -42,10 +48,9 @@
   },
   "homepage": "https://github.com/malcolmyu/isom-fetch#readme",
   "dependencies": {
-    "accepts": "^1.3.3",
-    "assert": "^1.4.1",
     "axios": "^0.12.0",
     "composition": "^2.3.0",
+    "invariant": "^2.2.1",
     "process": "^0.11.3"
   },
   "devDependencies": {
@@ -63,6 +68,7 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
     "co": "^4.6.0",
+    "concurrently": "^2.1.0",
     "eslint": "^2.12.0",
     "eslint-config-airbnb-base": "^3.0.1",
     "eslint-plugin-import": "^1.8.1",
@@ -74,7 +80,9 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "koa": "^1.2.0",
+    "koa-bodyparser": "^2.2.0",
     "koa-compose": "^2.4.0",
+    "koa-cors": "0.0.16",
     "koa-router": "^5.4.0",
     "mocha": "^2.5.3",
     "webpack": "^1.13.1"

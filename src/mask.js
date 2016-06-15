@@ -1,20 +1,24 @@
 import defaults from './defaults';
 
-function transformData(data, headers, fns) {
-  fns.forEach(fn => { data = fn(data, headers); });
-  return data;
+function combineURLs(baseURL, relativeURL) {
+  return `${baseURL.replace(/\/+$/, '')}/${relativeURL.replace(/^\/+/, '')}`;
+}
+
+function isAbsoluteURL(url) {
+  return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 }
 
 export const getRequest = (defConfig = {}, config) => {
   config = { ...defaults, ...defConfig, ...config };
+
+  if (config.baseURL && !isAbsoluteURL(config.url)) {
+    config.url = combineURLs(config.baseURL, config.url);
+  }
+
   config.withCredentials = config.withCredentials || defConfig.withCredentials;
 
-  // Transform request data
-  config.data = transformData(
-    config.data,
-    config.headers,
-    config.transformRequest
-  );
+  // 配合 bodyParser，将对象转化到 body 而非 data 上
+  config.body = config.data;
 
   // Flatten headers
   config.headers = {
@@ -27,9 +31,8 @@ export const getRequest = (defConfig = {}, config) => {
     delete config.headers[method];
   });
 
-  // It's a virtual request which DO NOT have socket
   config.socket = null;
-
+  
   return config;
 };
 
@@ -43,10 +46,6 @@ export const getResponse = () => {
     statusMessage: 'OK',
     setHeader,
     removeHeader,
-    // 确保请求可写
-    // 这是指为了模拟 res.writable 方法，保证再返回数据时可以用
-    socket: {
-      writable: true,
-    },
+    socket: null,
   };
 };

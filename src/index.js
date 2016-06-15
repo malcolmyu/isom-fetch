@@ -2,7 +2,7 @@ import process from 'process';
 import axios from 'axios';
 import compose from 'koa-compose';
 import co from 'co';
-import assert from 'assert';
+import invariant from 'invariant';
 
 import {
   createContext,
@@ -50,6 +50,7 @@ class Fetch {
    * 在服务器环境下生成一个单例的 fetch
    *
    * @param ctx {Object} koa 的 app 实例
+   * @param router {Router} koa-router 对象
    * @return {Fetch} 返回一个 fetch 的单例对象
    */
   @serverSideMethod
@@ -65,6 +66,7 @@ class Fetch {
    * 使用后端中间件充当请求体，并记录返回的 promise
    *
    * @param options {Object} 请求内容
+   * @param defaults {Object}  默认配置请求参数
    * @return {Promise} 返回一个 promise，请求的返回值
    */
   @serverSideMethod
@@ -76,6 +78,12 @@ class Fetch {
     return promise;
   }
 
+  /**
+   * 执行完所有请求的处理结果
+   *
+   * @param [callback] {Function} 回调函数
+   * @returns {Promise} 返回所有请求执行完成的情况
+   */
   @serverSideMethod
   all(callback) {
     const promise = Promise.all(singleton.fetchCollection);
@@ -87,9 +95,17 @@ class Fetch {
   }
 }
 
+/**
+ * 装饰器方法，统一处理所有 method 请求别名
+ *
+ * @param target
+ * @param name
+ * @param descriptor
+ * @returns {Promise}
+ */
 function fetchDecorator(target, name, descriptor) {
   const desc = descriptor;
-  desc.value = (...args) => {
+  desc.value = function des(...args) {
     let result;
 
     switch (name) {
@@ -115,16 +131,13 @@ function fetchDecorator(target, name, descriptor) {
       }
     }
 
-    // 不管是服务端还是客户端，这里用的都是 this.options
-    result = { ...result };
-
     if (isBrowser) {
-      const { request } = this.axios;
-      return request(result);
+      return this.axios.request(result);
     }
 
+    console.log('options', this.options);
     // 在服务端需要使用单例的 dispatch
-    return singleton.dispatch(result, target.options);
+    return singleton.dispatch(result, this.options);
   };
   return desc;
 }
@@ -135,10 +148,11 @@ export default {
    * 在服务器环境下生成一个单例的 fetch
    *
    * @param ctx {Object} koa 的 app 实例
+   * @param router {Router} koa-router 对象
    * @return {Fetch} 返回一个 fetch 的单例对象
    */
   use(ctx, router) {
-    assert(
+    invariant(
       singleton === null,
       '服务端 fetch 冲突，请检查是否调用 fetch.all'
     );
