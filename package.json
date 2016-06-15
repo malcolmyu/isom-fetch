@@ -1,0 +1,82 @@
+{
+  "name": "isom-fetch",
+  "version": "1.0.0",
+  "description": "A isomorphic fetch for SSR and koa ",
+  "main": "lib/index.js",
+  "scripts": {
+    "server:test": "better-npm-run server:test",
+    "test": "karma test",
+    "lint": "eslint src",
+    "build": "better-npm-run build"
+  },
+  "betterScripts": {
+    "build": {
+      "command": "webpack src/index.js dist/redux.js",
+      "env": {
+        "NODE_ENV": "development",
+        "BABEL_ENV": "commonjs"
+      }
+    },
+    "server:test": {
+      "command": "node tests/_server.babel.js",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "3009"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malcolmyu/isom-fetch.git"
+  },
+  "keywords": [
+    "isomorphic",
+    "fetch",
+    "SSR",
+    "koa"
+  ],
+  "author": "malcolmyu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/malcolmyu/isom-fetch/issues"
+  },
+  "homepage": "https://github.com/malcolmyu/isom-fetch#readme",
+  "dependencies": {
+    "accepts": "^1.3.3",
+    "assert": "^1.4.1",
+    "axios": "^0.12.0",
+    "composition": "^2.3.0",
+    "process": "^0.11.3"
+  },
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-core": "^6.9.1",
+    "babel-eslint": "^6.0.4",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-plugin-transform-runtime": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-register": "^6.9.0",
+    "babel-runtime": "^6.9.2",
+    "better-npm-run": "0.0.8",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "co": "^4.6.0",
+    "eslint": "^2.12.0",
+    "eslint-config-airbnb-base": "^3.0.1",
+    "eslint-plugin-import": "^1.8.1",
+    "karma": "^0.13.22",
+    "karma-chai": "^0.1.0",
+    "karma-chai-as-promised": "^0.1.2",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-mocha": "^1.0.1",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^1.7.0",
+    "koa": "^1.2.0",
+    "koa-compose": "^2.4.0",
+    "koa-router": "^5.4.0",
+    "mocha": "^2.5.3",
+    "webpack": "^1.13.1"
+  }
+}
