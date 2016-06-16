@@ -11,3 +11,7 @@ sudo: false
 
 script:
   - npm test
+
+branches:
+  only:
+    - master
