@@ -1,11 +1,9 @@
-import isomFetch from '../src';
+import isomFetch from '../';
 import { HOST, PORT } from './_config';
 
 const fetch = isomFetch.create({
   baseURL: `http://${HOST}:${PORT}`,
 });
-
-console.log(`http://${HOST}:${PORT}`);
 
 describe('模拟服务端渲染测试', () => {
   it('请求两个 get 数据', () => {

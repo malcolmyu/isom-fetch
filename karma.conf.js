@@ -1,4 +1,5 @@
 // Karma configuration
+var prod = process.env.NODE_ENV !== 'development';
 
 module.exports = function(config) {
   config.set({
@@ -13,6 +14,7 @@ module.exports = function(config) {
       require('karma-chai-as-promised'),
       require('karma-sourcemap-loader'),
       require('karma-chrome-launcher'),
+      require('karma-phantomjs-launcher'),
       require('karma-webpack'),
     ],
     // list of files / patterns to load in the browser
@@ -67,10 +69,10 @@ module.exports = function(config) {
     autoWatch: true,
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: prod ? ['PhantomJS'] : ['Chrome', 'PhantomJS'],
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: prod,
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity

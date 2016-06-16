@@ -4,28 +4,37 @@
   "description": "A isomorphic fetch for SSR and koa ",
   "main": "lib/index.js",
   "scripts": {
-    "server:test": "better-npm-run server:test",
-    "test:karma": "better-npm-run test:karma",
-    "test": "concurrently --kill-others \"npm run server:test\" \"npm run test:karma\"",
+    "clean": "rimraf lib",
+    "server:dev": "better-npm-run server:dev",
+    "karma:dev": "better-npm-run karma:dev",
+    "karma:travis": "better-npm-run karma:travis",
+    "test:dev": "npm run build && concurrently --kill-others \"npm run server:dev\" \"npm run karma:dev\"",
+    "test": "npm run build && concurrently --kill-others \"npm run server:dev\" \"npm run karma:travis\"",
     "lint": "eslint src",
     "build": "better-npm-run build"
   },
   "betterScripts": {
-    "test:karma": {
+    "karma:dev": {
       "command": "karma start",
       "env": {
         "NODE_ENV": "development"
       }
     },
+    "karma:travis": {
+      "command": "karma start",
+      "env": {
+        "NODE_ENV": "travis"
+      }
+    },
     "build": {
-      "command": "webpack src/index.js dist/redux.js",
+      "command": "npm run clean && babel src --out-dir lib",
       "env": {
         "NODE_ENV": "development",
         "BABEL_ENV": "commonjs"
       }
     },
-    "server:test": {
-      "command": "node tests/_server.babel.js",
+    "server:dev": {
+      "command": "node test/_server.babel.js",
       "env": {
         "NODE_ENV": "development"
       }
@@ -49,12 +58,12 @@
   "homepage": "https://github.com/malcolmyu/isom-fetch#readme",
   "dependencies": {
     "axios": "^0.12.0",
-    "composition": "^2.3.0",
+    "es6-promise": "^3.2.1",
     "invariant": "^2.2.1",
     "process": "^0.11.3"
   },
   "devDependencies": {
-    "babel": "^6.5.2",
+    "babel-cli": "^6.10.1",
     "babel-core": "^6.9.1",
     "babel-eslint": "^6.0.4",
     "babel-loader": "^6.2.4",
@@ -77,14 +86,16 @@
     "karma-chai-as-promised": "^0.1.2",
     "karma-chrome-launcher": "^1.0.1",
     "karma-mocha": "^1.0.1",
+    "karma-phantomjs-launcher": "^1.0.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "koa": "^1.2.0",
     "koa-bodyparser": "^2.2.0",
-    "koa-compose": "^2.4.0",
     "koa-cors": "0.0.16",
     "koa-router": "^5.4.0",
     "mocha": "^2.5.3",
+    "phantomjs-prebuilt": "^2.1.7",
+    "rimraf": "^2.5.2",
     "webpack": "^1.13.1"
   }
 }

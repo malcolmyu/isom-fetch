@@ -1,8 +1,10 @@
 import process from 'process';
 import axios from 'axios';
-import compose from 'koa-compose';
 import co from 'co';
 import invariant from 'invariant';
+
+import 'es6-promise';
+import compose from './compose';
 
 import {
   createContext,
@@ -135,7 +137,6 @@ function fetchDecorator(target, name, descriptor) {
       return this.axios.request(result);
     }
 
-    console.log('options', this.options);
     // 在服务端需要使用单例的 dispatch
     return singleton.dispatch(result, this.options);
   };

@@ -32,7 +32,7 @@ export const getRequest = (defConfig = {}, config) => {
   });
 
   config.socket = null;
-  
+
   return config;
 };
 
