@@ -9,7 +9,7 @@
     "karma:dev": "better-npm-run karma:dev",
     "karma:travis": "better-npm-run karma:travis",
     "test:dev": "npm run build && concurrently --kill-others \"npm run server:dev\" \"npm run karma:dev\"",
-    "test": "npm run build && concurrently --kill-others \"npm run server:dev\" \"npm run karma:travis\"",
+    "test": "npm run build && concurrently --raw --kill-others --success \"npm run server:dev\" \"npm run karma:travis\"",
     "lint": "eslint src",
     "build": "better-npm-run build"
   },
