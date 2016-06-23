@@ -15,6 +15,7 @@ module.exports = function(config) {
       require('karma-sourcemap-loader'),
       require('karma-chrome-launcher'),
       require('karma-phantomjs-launcher'),
+      require('karma-mocha-reporter'),
       require('karma-webpack'),
     ],
     // list of files / patterns to load in the browser
@@ -57,7 +58,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['mocha'],
     // web server port
     port: 9876,
     // enable / disable colors in the output (reporters and logs)
