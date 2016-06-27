@@ -1,6 +1,6 @@
 {
   "name": "isom-fetch",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A isomorphic fetch for SSR and koa ",
   "main": "lib/index.js",
   "scripts": {

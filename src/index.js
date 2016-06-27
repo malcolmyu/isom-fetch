@@ -136,7 +136,8 @@ function fetchDecorator(target, name, descriptor) {
     if (isBrowser) {
       return this.axios.request(result);
     }
-
+    
+    if (!singleton) return Promise.resolve();
     // 在服务端需要使用单例的 dispatch
     return singleton.dispatch(result, this.options);
   };
