@@ -2,8 +2,9 @@ import process from 'process';
 import axios from 'axios';
 import co from 'co';
 import invariant from 'invariant';
-
 import 'es6-promise';
+
+import { getURL } from './mask';
 import compose from './compose';
 
 import {
@@ -24,6 +25,7 @@ class Fetch {
 
   constructor(options = {}) {
     this.options = options;
+    this.thunk = !!options.thunk;
     this.axios = axios.create(options);
   }
 
@@ -61,6 +63,7 @@ class Fetch {
     this.ctx = ctx;
     this.router = router;
     this.fetchCollection = [];
+    this.urlCollection = {};
     return this;
   }
 
@@ -77,6 +80,13 @@ class Fetch {
     const fn = co.wrap(compose([this.router.routes()]));
     const promise = fn.call(context).then(() => respond.call(context));
     this.fetchCollection.push(promise);
+    
+    // 记录已渲染的 url
+    if (typeof this.urlCollection[context.req.url] === 'number') {
+      this.urlCollection[context.req.url]++;
+    } else {
+      this.urlCollection[context.req.url] = 0;
+    }
     return promise;
   }
 
@@ -91,7 +101,7 @@ class Fetch {
     const promise = Promise.all(singleton.fetchCollection);
     singleton = null;
 
-    return typeof callback !== 'function'
+    return typeof callback === 'function'
       ? promise.then(callback)
       : promise;
   }
@@ -134,6 +144,17 @@ function fetchDecorator(target, name, descriptor) {
     }
 
     if (isBrowser) {
+      if (this.thunk) {
+        const payload = (dispatch, action) => {
+          this.axios.request(result).then(data => dispatch({
+            type: action.type,
+            payload: data
+          }));
+        };
+        payload.isomFetch = true;
+        payload.url = getURL({ this.options, ...result });
+        return payload;
+      }
       return this.axios.request(result);
     }
 
