@@ -91,7 +91,7 @@ class Fetch {
     const promise = Promise.all(singleton.fetchCollection);
     singleton = null;
 
-    return typeof callback !== 'function'
+    return typeof callback === 'function'
       ? promise.then(callback)
       : promise;
   }
