@@ -11,6 +11,7 @@
   "globals": {
     "describe": true,
     "it": true,
-    "__FETCH_URLS__"
+    "__FETCH_URLS__": true,
+    "expect": true
   }
 }

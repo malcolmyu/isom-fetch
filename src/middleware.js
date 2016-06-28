@@ -13,10 +13,11 @@ const isomFetchMiddleware = ({ dispatch }) => next => action => {
         fetched[payload.url]--;
         action.type = privateType;
         return next(action);
-      } else {
-        return payload(dispatch, action);
       }
+      return payload(dispatch, action);
     }
   }
   return next(action);
-}
+};
+
+export default isomFetchMiddleware;
