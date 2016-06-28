@@ -1,6 +1,10 @@
+import invariant from 'invariant';
+
 const DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded',
 };
+
+let urlState = '__FETCH_URLS__';
 
 export default {
   headers: {
@@ -23,3 +27,14 @@ export default {
     return status >= 200 && status < 300;
   },
 };
+
+export const setUrlState = name => {
+  invariant(
+    typeof name === 'string',
+    'urlState 只能为字符串'
+  );
+
+  urlState = name;
+};
+
+export const getUrlState = () => urlState;

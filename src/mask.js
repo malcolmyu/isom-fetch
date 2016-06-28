@@ -8,12 +8,17 @@ function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 }
 
+export const getURL = config => {
+  if (config.baseURL && !isAbsoluteURL(config.url)) {
+    return combineURLs(config.baseURL, config.url);
+  }
+  return config.url || '';
+};
+
 export const getRequest = (defConfig = {}, config) => {
   config = { ...defaults, ...defConfig, ...config };
 
-  if (config.baseURL && !isAbsoluteURL(config.url)) {
-    config.url = combineURLs(config.baseURL, config.url);
-  }
+  config.url = getURL(config);
 
   config.withCredentials = config.withCredentials || defConfig.withCredentials;
 

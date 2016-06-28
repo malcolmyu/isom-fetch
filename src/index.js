@@ -2,9 +2,12 @@ import process from 'process';
 import axios from 'axios';
 import co from 'co';
 import invariant from 'invariant';
-
 import 'es6-promise';
+
+import { getURL } from './mask';
 import compose from './compose';
+import reduxIsomFetch from './middleware';
+import { getUrlState as getURLStateName } from './defaults';
 
 import {
   createContext,
@@ -24,6 +27,7 @@ class Fetch {
 
   constructor(options = {}) {
     this.options = options;
+    this.thunk = !!options.thunk;
     this.axios = axios.create(options);
   }
 
@@ -61,6 +65,7 @@ class Fetch {
     this.ctx = ctx;
     this.router = router;
     this.fetchCollection = [];
+    this.urlCollection = {};
     return this;
   }
 
@@ -77,6 +82,13 @@ class Fetch {
     const fn = co.wrap(compose([this.router.routes()]));
     const promise = fn.call(context).then(() => respond.call(context));
     this.fetchCollection.push(promise);
+
+    // 记录已渲染的 url
+    if (typeof this.urlCollection[context.req.url] === 'number') {
+      this.urlCollection[context.req.url]++;
+    } else {
+      this.urlCollection[context.req.url] = 1;
+    }
     return promise;
   }
 
@@ -134,9 +146,21 @@ function fetchDecorator(target, name, descriptor) {
     }
 
     if (isBrowser) {
-      return this.axios.request(result);
+      if (this.thunk) {
+        const payload = (dispatch, action) => {
+          this.axios.request(result).then(resp => dispatch({
+            type: action.type,
+            payload: resp.data,
+          }));
+        };
+        payload.isomFetch = true;
+        payload.url = getURL({ ...this.options, ...result });
+        return payload;
+      }
+      return this.axios.request(result).then(resp => resp.data);
     }
-    
+
+    // 在没有单例的时候直接解决一下
     if (!singleton) return Promise.resolve();
     // 在服务端需要使用单例的 dispatch
     return singleton.dispatch(result, this.options);
@@ -173,4 +197,7 @@ export default {
   create(options) {
     return new Fetch(options);
   },
+
 };
+
+export { reduxIsomFetch, getURLStateName };

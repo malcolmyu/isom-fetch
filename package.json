@@ -1,7 +1,7 @@
 {
   "name": "isom-fetch",
-  "version": "1.0.4",
-  "description": "A isomorphic fetch for SSR and koa",
+  "version": "1.1.0",
+  "description": "A isomorphic fetch for SSR and koa ",
   "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf lib",
