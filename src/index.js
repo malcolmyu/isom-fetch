@@ -178,11 +178,6 @@ export default {
    * @return {Fetch} 返回一个 fetch 的单例对象
    */
   use(ctx, router) {
-    invariant(
-      singleton === null,
-      '服务端 fetch 冲突，请检查是否调用 fetch.all'
-    );
-
     singleton = new Fetch();
     singleton.use(ctx, router);
     return singleton;

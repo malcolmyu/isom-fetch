@@ -1,7 +1,7 @@
 import process from 'process';
 import { getUrlState } from './defaults';
 
-const privateType = '@@isom-fetch/do-not-match-any-type';
+const privateType = '@@isom-fetch/data-rendered-by-server-side';
 
 const isomFetchMiddleware = ({ dispatch }) => next => action => {
   if (process.browser) {

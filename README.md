@@ -40,5 +40,6 @@ const fetch = fetch.create({
   headers: {}
 });
 
-fetch.get('/user', { id });
+fetch.get(`/user/${id}`);
+fetch.post(`/user`, id);
 ```
